@@ -1,0 +1,89 @@
+1) In the title of the header, it displays 5 orders but there are 6 orders in the table. We want to display the total number of orders in the header title 
+
+
+solution:
+
+for this in assets/data.json there is an results array of object.That is the mockdata provided so we need to give secondary title as the length of this array. that's why in headertitle i have made the following changes 
+
+
+ <HeaderTitle
+          primaryTitle="Orders"
+          secondaryTitle={mockData.results.length}
+        />  
+
+
+2)In the table order submitted date is missing, we have timestamp data included in the src\assets\timeStamps.json with the corresponding ids, please combine that with the order data and make sure the order submitted date is being displayed in the table
+
+
+solution:
+
+we have to combine the order data and need to display in the order submitted . for this i have made the following changes
+
+const timestampsById = timestamps.results.reduce((acc, curr) => {
+  acc[curr["&id"]] = curr.timestamps;
+  return acc;
+}, {});
+    <List rows={mockData.results} timestampsById={timestampsById} /> in dashboard.jsx
+
+3)Order Volume cell is displaying USD values, can you please make it display the currency value selected on the dropdown located in the header of the dashboard
+
+solution
+
+{/* <List
+          rows={mockData.results}
+          timestampsById={timestampsById}
+          currency={currency}
+        /> */}
+
+
+4)Can you please add search feature on the order IDs with the search bar given in the header
+
+solution:
+
+ const filteredRows = mockData.results.filter((row) =>
+    row["&id"].toLowerCase().includes(searchText.toLowerCase())
+  );
+ <List
+          rows={filteredRows}
+          timestampsById={timestampsById}
+          currency={currency}
+          onOrderSelect={handleOrderSelect}
+        />
+
+5)
+Please clear the console errors and warnings.
+
+for this i have added key in list.jsx
+
+{rows.map((row, index) => (
+          <ListRow key={index} onClick={() => onOrderSelect(row)}>
+
+6)
+When user selects an order, can you populate the Card on top of the listing component as shown in the image
+
+
+for this i have added this in dashboard.jsx
+
+<List
+      rows={filteredRows}
+      timestamps={timestamps.results}
+      currency={currency}
+      onRowClick={handleRowClick}
+    />
+
+
+
+const handleRowClick = (row,index,timestamps) => {
+  setSelectedOrderDetails({
+    "buySellIndicator": row.executionDetails.buySellIndicator,
+    "orderStatus": row.executionDetails.orderStatus,
+    "orderType": row.executionDetails.orderType
+  });
+  setSelectedOrderTimeStamps({
+    "orderReceived": timestamps[index].timestamps.orderReceived,
+  "orderStatusUpdated": timestamps[index].timestamps.orderStatusUpdated,
+  "orderSubmitted": timestamps[index].timestamps.orderSubmitted
+  });   
+};
+
+this in list 
